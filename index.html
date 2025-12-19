@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mon emploi du temps</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 10px;
+    }
+    h2 {
+      margin-top: 20px;
+    }
+    .cours {
+      background: white;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+<h1>📅 Emploi du temps</h1>
+<div id="planning"></div>
+
+<script>
+const sheetURL = "COLLE_ICI_TON_LIEN_CSV";
+
+fetch(sheetURL)
+  .then(res => res.text())
+  .then(text => {
+    const lignes = text.split("\n").slice(1);
+    const planning = {};
+
+    lignes.forEach(ligne => {
+      const [jour, heure, matiere, salle] = ligne.split(",");
+      if (!planning[jour]) planning[jour] = [];
+      planning[jour].push({ heure, matiere, salle });
+    });
+
+    const container = document.getElementById("planning");
+
+    Object.keys(planning).forEach(jour => {
+      const h2 = document.createElement("h2");
+      h2.textContent = jour;
+      container.appendChild(h2);
+
+      planning[jour].forEach(cours => {
+        const div = document.createElement("div");
+        div.className = "cours";
+        div.innerHTML = `<strong>${cours.heure}</strong><br>${cours.matiere}<br>${cours.salle}`;
+        container.appendChild(div);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
